@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1em 0;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        td img {
+            width: 100px;
+            height: auto;
+        }
+
+        td a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+        }
+
+        .total {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: right;
+            padding-right: 10%;
+        }
+
+        .empty-cart {
+            text-align: center;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+
+        footer {
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Your Cart</h1>
+</header>
+
+<div class="container">
+    {% if cart_items %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Category</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                    <tr>
+                        <td>
+                            <img src="{{ item.by_product.image.url }}" alt="{{ item.by_product.name }}">
+                            <br>
+                            {{ item.by_product.name }}
+                        </td>
+                        <td>{{ item.by_product.description }}</td>
+                        <td>${{ item.by_product.price|floatformat:2 }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.total_price|floatformat:2 }}</td>
+
+                        <td>{{ item.by_product.category }}</td>
+                        <td>{{ item.by_product.created_at|date:"Y-m-d H:i" }}</td>
+                        <td>
+                            <!-- Link to remove or update quantity -->
+                            <a href="{% url 'delete_from_cart' item.by_product.id %}">Remove</a> | <a href="{% url 'add_to_cart' item.by_product.id %}">Update</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="total">
+            Total: ${{ total_amount|floatformat:2 }}
+        </div>
+
+    {% else %}
+        <div class="empty-cart">
+            <p>Your cart is empty.</p>
+        </div>
+    {% endif %}
+</div>
+
+<footer>
+    <p>&copy; 2025 Your Shop - All Rights Reserved</p>
+</footer>
+
+</body>
+</html>

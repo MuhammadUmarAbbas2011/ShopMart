@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f9f9f9, #e0e0e0);
+            color: #333;
+            background-image: url("{% static 'bg-prod.jpg' %}"); /* Subtle texture */
+            background-size: cover;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1; /* Ensure content is above background */
+        }
+
+        /* Filter Form */
+        .filter-form {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-form input, .filter-form select, .filter-form button {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-form button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+
+        .filter-form button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Product Grid */
+        .product-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .product-card {
+            border-radius: 12px;
+            padding: 15px;
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid transparent; /* For hover effect */
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid #007bff; /* Highlight border on hover */
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+
+        .product-card img:hover {
+            transform: scale(1.1); /* Scale image on hover */
+        }
+
+        .product-card h3 {
+            margin: 10px 0;
+            font-size: 20px;
+            color: #333;
+        }
+
+        .product-card p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* Loading Indicator */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2em;
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .filter-form {
+                flex-direction: column;
+            }
+
+            .filter-form input, .filter-form select, .filter-form button {
+                margin-bottom: 10px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Filter Form -->
+        <form class="filter-form" method="get" action="{% url 'products' %}">
+            <input type="text" name="q" placeholder="Search products..." value="{{ query }}">
+            <select name="category">
+                <option value="">All Categories</option>
+                <option value="TECH">Tech</option>
+                <option value="CLOTHING">Clothing</option>
+                <option value="FOOD">Food</option>
+                <option value="FURNITURE">Furniture</option>
+                <option value="BEAUTY">Beauty</option>
+                <option value="SPORTS">Sports</option>
+                <option value="AUTOMOTIVE">Automotive</option>
+                <option value="TOYS">Toys</option>
+                <option value="BOOKS">Books</option>
+                <option value="MUSIC">Music</option>
+                <option value="HEALTH">Health</option>
+                <option value="HOME_APPLIANCES">Home Appliances</option>
+                <option value="GROCERY">Grocery</option>
+                <option value="JEWELRY">Jewelry</option>
+                <option value="PET_SUPPLIES">Pet Supplies</option>
+                <option value="ELECTRONICS">Electronics</option>
+                <option value="BABY_PRODUCTS">Baby Products</option>
+                <option value="GARDENING">Gardening</option>
+                <option value="OFFICE_SUPPLIES">Office Supplies</option>
+                <option value="TRAVEL">Travel</option>
+                <option value="OUTDOOR">Outdoor & Camping</option>
+                <option value="VIDEO_GAMES">Video Games</option>
+                <option value="HANDMADE">Handmade & Crafts</option>
+                <option value="LUXURY">Luxury Items</option>
+                <option value="MEDICAL">Medical & Pharmacy</option>
+                <option value="INDUSTRIAL">Industrial & Tools</option>
+                <option value="GIFTS">Gifts & Collectibles</option>
+                <option value="MOVIES">Movies & Entertainment</option>
+                <option value="HOME_DECOR">Home Decor</option>
+                <option value="ART">Art & Paintings</option>
+                <option value="HOBBIES">Hobbies & DIY</option>
+                <option value="SECURITY">Security & Surveillance</option>
+                <option value="BICYCLES">Bicycles & Accessories</option>
+                <option value="WATCHES">Watches</option>
+                <option value="FARMING">Farming & Agriculture</option>
+                <option value="REAL_ESTATE">Real Estate</option>
+                <option value="EDUCATION">Education & e-Learning</option>
+                <option value="GAMING">Gaming</option>
+                <option value="FASHION">Fashion</option>
+                <option value="SPIRITUAL">Spiritual & Religious</option>
+                <option value="MOTORS">Motorcycles & Scooters</option>
+                <option value="RESTAURANTS">Restaurants & Cafes</option>
+                <option value="BAKERY">Bakery & Confectionery</option>
+                <option value="WEDDINGS">Weddings & Events</option>
+                <option value="PHOTOGRAPHY">Photography & Videography</option>
+                <option value="MUSICAL_INSTRUMENTS">Musical Instruments</option>
+                <option value="TEA_COFFEE">Tea & Coffee</option>
+                <option value="FISHING">Fishing & Hunting</option>
+                <option value="DRONES">Drones & RC Gadgets</option>
+                <option value="ENERGY">Solar & Renewable Energy</option>
+                <option value="VR_AR">VR & AR Equipment</option>
+                <option value="FITNESS">Fitness & Gym Equipment</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        
+        <!-- Product Grid -->
+        <div class="product-container" id="product-container">
+            {% for product in products %}
+            <div class="product-card">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.description }}</p>
+                <p>Price: ${{ product.price }}</p>
+                <p>Store: {{ product.store.by_user.username }}</p>
+                <p>Category: {{ product.get_category_display }}</p>
+                <a href="{% url 'add_to_cart' product.id %}"><button>Add To Cart</button></a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Loading Indicator -->
+        <div class="loading" id="loading">
+            Loading more products...
+        </div>
+    </div>
+
+    <script>
+        let page = 1;
+        let loading = false;
+        const container = document.getElementById('product-container');
+        const loadingElement = document.getElementById('loading');
+
+        // Infinite Scroll Logic
+        window.addEventListener('scroll', function() {
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500 && !loading) {
+                loadMoreProducts();
+            }
+        });
+
+        // Function to Load More Products
+        function loadMoreProducts() {
+            page++;
+            loading = true;
+            loadingElement.style.display = 'block';
+
+            // Fetch the next page of products
+            fetch(`?page=${page}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Append new products to the container
+                data.products.forEach(product => {
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.innerHTML = `
+                        <img src="${product.image_url}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        <p>${product.description}</p>
+                        <p>Price: $${product.price}</p>
+                        <p>Store: ${product.store}</p>
+                        <p>Category: ${product.category}</p>
+                    `;
+                    container.appendChild(productCard);
+                });
+
+                // Hide loading indicator
+                loading = false;
+                loadingElement.style.display = 'none';
+
+                // Stop loading if there are no more products
+                if (!data.has_next) {
+                    window.removeEventListener('scroll');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
