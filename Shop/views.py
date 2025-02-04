@@ -6,7 +6,11 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from .models import *
 from django.db.models import Q
-
+import stripe
+from django.conf import settings
+import json
+from .forms import *
+stripe.api_key = settings.STRIPE_SECRET_KEY
 def register(request):
     if request.user.is_authenticated:
         return redirect('products')
@@ -128,3 +132,143 @@ def delete_items_from_cart(request, id):
             cart_item.delete()
     
     return redirect('view_cart')
+def product_detail_view(request,id):
+    product = Products.objects.get(id = id)
+    context = {
+        'product':product
+    }
+    return render(request,'product_detail.html',context)
+
+def checkout_page(request, id):
+    product = get_object_or_404(Products, id=id)
+    user = request.user
+
+    return render(request, 'checkout.html', {'product': product, 'user': user})
+def checkout(request, id):
+    product = get_object_or_404(Products, id=id)
+    user = request.user
+
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            phone_number = data.get("phone_number")
+            shipping_address = data.get("shipping_address")
+
+            if not phone_number or not shipping_address:
+                return JsonResponse({"error": "Phone number and address are required"}, status=400)
+
+            # Create a Checkout entry first
+            checkout = CheckoutModel.objects.create(
+                by_user=user,
+                total_amount=product.price,
+                phone_number=phone_number,
+                shipping_address=shipping_address
+            )
+            checkout.items.set([product])
+
+            session = stripe.checkout.Session.create(
+                payment_method_types=["card"],
+                line_items=[{
+                    "price_data": {
+                        "currency": "usd",
+                        "product_data": {"name": product.name},
+                        "unit_amount": int(product.price * 100),
+                    },
+                    "quantity": 1,
+                }],
+                mode="payment",
+                success_url=request.build_absolute_uri(f"/payment_success/{checkout.id}/"),
+                cancel_url=request.build_absolute_uri("/payment_failed/"),
+            )
+
+            checkout.payment_id = session.id
+            checkout.save()
+
+            return JsonResponse({"session_id": session.id})
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data"}, status=400)
+
+    return render(request, "checkout.html", {"product": product, "user": user})
+
+
+def payment_success(request, id):
+    checkout = get_object_or_404(CheckoutModel, id=id)
+
+    if checkout.payment_status != "Paid":
+        checkout.payment_status = "Paid"
+        checkout.save()
+
+        # Convert CheckoutModel to OrderModel
+        order = OrderModel.objects.create(
+            by_user=checkout.by_user,
+            total_amount=checkout.total_amount,
+            phone_number=checkout.phone_number,
+            shipping_address=checkout.shipping_address
+        )
+        order.items.set(checkout.items.all())  # Set the ManyToMany relationship
+
+        # Use OrderModel's generated tracking_id
+        tracking_id = order.tracking_id
+
+        # Delete CheckoutModel entry after successful order conversion
+        checkout.delete()
+
+        return render(request, "payment_success.html", {"order": order, "tracking_id": tracking_id})
+
+    return render(request, "payment_success.html", {"checkout": checkout, "tracking_id": None})
+
+def payment_failed(request):
+    return render(request, "payment_failed.html")
+def track_order(request):
+    tracking_id = request.GET.get("tracking_id")
+    order = None
+
+    if tracking_id:
+        try:
+            order = OrderModel.objects.get(tracking_id=tracking_id)
+        except OrderModel.DoesNotExist:
+            order = None
+
+    return render(request, "track_order.html", {"order": order, "tracking_id": tracking_id})
+def all_orders_of_user(request):
+    user  = request.user
+    orders = OrderModel.objects.filter(by_user = user)
+    return render(request,'all_orders.html',context={'user':user,'orders':orders})
+
+def delete_order(request, order_id):
+    order = get_object_or_404(OrderModel, id=order_id, by_user=request.user)
+
+    if order.can_delete():
+        order.delete()
+        messages.success(request, "Order deleted successfully.")
+    else:
+        messages.error(request, "You can only delete pending orders.")
+
+    return redirect('all_orders')
+
+def add_review(request, order_id):
+    order = get_object_or_404(OrderModel, id=order_id, by_user=request.user)
+
+    if order.order_status != 'delivered':
+        messages.error(request, "You can only review products after the order is delivered.")
+        return redirect('all_orders')
+
+    if request.method == 'POST':
+        product_id = request.POST.get('product_id')  # Get selected product
+        product = get_object_or_404(Products, id=product_id)
+
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.user = request.user
+            review.product = product
+            review.order = order
+            review.save()
+            messages.success(request, "Your review has been submitted.")
+            return redirect('all_orders')
+
+    form = ReviewForm()
+    products = order.items.all()  # Get all products in the order
+
+    return render(request, 'add_review.html', {'form': form, 'products': products, 'order': order})

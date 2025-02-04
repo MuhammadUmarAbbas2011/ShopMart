@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave a Review</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+        }
+        h2 {
+            color: #333;
+        }
+        form {
+            margin-top: 15px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 15px;
+            border: none;
+            background: #28a745;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #218838;
+        }
+        .messages {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Leave a Review for Your Order #{{ order.id }}</h2>
+
+    <!-- Display Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="messages {% if message.tags %}{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Review Form -->
+    <form action="{% url 'add_review' order.id %}" method="post">
+        {% csrf_token %}
+
+        <label for="product_id">Select Product:</label>
+        <select name="product_id" required>
+            {% for product in products %}
+                <option value="{{ product.id }}">{{ product.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="rating">Rating (1-5):</label>
+        {{ form.rating }}
+
+        <label for="comment">Your Review:</label>
+        {{ form.comment }}
+
+        <button type="submit">Submit Review</button>
+    </form>
+
+    <br>
+    <a href="{% url 'all_orders' %}">Back to Orders</a>
+</div>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.utils.text import slugify
+import uuid
 class Stores(models.Model):
     CATEGORY_CHOICES = [
         ('TECH', 'Tech'),
@@ -78,10 +79,71 @@ class Products(models.Model):
 class CartModel(models.Model):
     by_user = models.ForeignKey(User, on_delete=models.CASCADE)
     by_product = models.ForeignKey(Products, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)  # Quantity field
+    quantity = models.PositiveIntegerField(default=1)
 
     class Meta:
         unique_together = ('by_user', 'by_product')
 
     def __str__(self):
         return f"{self.by_user.username} - {self.by_product.name} x {self.quantity}"
+
+
+class CheckoutModel(models.Model):
+    by_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Products)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    phone_number = models.CharField(max_length=15)
+    shipping_address = models.TextField()
+    payment_status = models.CharField(max_length=20, default="Pending")
+    slug = models.SlugField(unique=True, blank=True)  # Remove default value
+    tracking_id = models.CharField(max_length=15, unique=True, blank=True)  # Unique tracking ID
+
+    def save(self, *args, **kwargs):
+        if not self.slug:  # Only generate if slug is empty
+            self.slug = slugify(str(uuid.uuid4())[:8])  # Generate a unique slug
+        if not self.tracking_id:  # Generate tracking ID if empty
+            self.tracking_id = str(uuid.uuid4())[:15]
+        super().save(*args, **kwargs)
+
+class OrderModel(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('shipped', 'Shipped'),
+        ('in_warehouse', 'IN OUR WAREHOUSE'),
+        ('in_your_city', 'IN YOUR CITY'),
+        ('delivered', 'Delivered'),
+        ('cancelled', 'Cancelled'),
+    ]
+
+    by_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    items = models.ManyToManyField('Products')
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    phone_number = models.CharField(max_length=15)
+    shipping_address = models.TextField()
+    slug = models.SlugField(unique=True, blank=True)
+    tracking_id = models.CharField(max_length=15, unique=True, blank=True)
+    order_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    def can_delete(self):
+        return self.order_status == 'pending'
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(f"{self.by_user.username}-{uuid.uuid4().hex[:6]}")
+        if not self.tracking_id:
+            self.tracking_id = f"ORD-{uuid.uuid4().hex[:8].upper()}"
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Order by {self.by_user.username} - {self.tracking_id}"
+    
+class ProductReview(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE)
+    order = models.ForeignKey(OrderModel, on_delete=models.CASCADE) 
+    comment = models.TextField()
+    rating = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)]) 
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Review by {self.user.username} for {self.product.name}"

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Your Order</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 50%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1.1em;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            font-size: 1.2em;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #388E3C;
+        }
+
+        .order-details {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Track Your Order</h1>
+        <form method="GET">
+            <input type="text" name="tracking_id" placeholder="Enter Tracking ID" required>
+            <button type="submit">Track Order</button>
+        </form>
+
+        {% if tracking_id %}
+            {% if order %}
+                <div class="order-details">
+                    <h2>Order Details</h2>
+                    <p><strong>Order ID:</strong> {{ order.tracking_id }}</p>
+                    <p><strong>User:</strong> {{ order.by_user.username }}</p>
+                    <p><strong>Total Amount:</strong> ${{ order.total_amount }}</p>
+                    <p><strong>Shipping Address:</strong> {{ order.shipping_address }}</p>
+                    <p><strong>Placed on:</strong> {{ order.created_at }}</p>
+                </div>
+            {% else %}
+                <p class="error">Invalid Tracking ID. Please try again.</p>
+            {% endif %}
+        {% endif %}
+    </div>
+
+</body>
+</html>

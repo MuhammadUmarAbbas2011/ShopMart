@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Orders</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .order-container {
+            width: 80%;
+            margin: auto;
+        }
+        .no-orders {
+            text-align: center;
+            font-size: 18px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class="order-container">
+    <h2>Orders of {{ user.username }}</h2>
+
+    {% if orders %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Items</th>
+                    <th>Total Amount</th>
+                    <th>Phone Number</th>
+                    <th>Shipping Address</th>
+                    <th>Tracking ID</th>
+                    <th>Ordered On</th>
+                    <th>Order Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>
+                        <ul>
+                            {% for item in order.items.all %}
+                                <li>{{ item.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>${{ order.total_amount }}</td>
+                    <td>{{ order.phone_number }}</td>
+                    <td>{{ order.shipping_address }}</td>
+                    <td>{{ order.tracking_id }}</td>
+                    <td class="status {{ order.order_status }}">{{ order.get_order_status_display }}</td>
+                    <td>{{ order.created_at }}</td>
+                    <td>
+                        {% if order.can_delete %}
+                            <form action="{% url 'delete_order' order.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" style="background-color: red; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+                                    Delete
+                                </button>
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            
+        </table>
+    {% else %}
+        <p class="no-orders">No orders found.</p>
+    {% endif %}
+</div>
+
+</body>
+</html>

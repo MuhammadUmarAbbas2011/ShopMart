@@ -113,3 +113,5 @@ import os
 
 MEDIA_URL = '/media/'  # URL to access media files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Path to store media files
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
+STRIPE_PUBLI_KEY = config('STRIPE_PUBLISHABLE_KEY')

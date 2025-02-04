@@ -206,7 +206,8 @@
                 <p>Price: ${{ product.price }}</p>
                 <p>Store: {{ product.store.by_user.username }}</p>
                 <p>Category: {{ product.get_category_display }}</p>
-                <a href="{% url 'add_to_cart' product.id %}"><button>Add To Cart</button></a>
+                <a href="{% url 'add_to_cart' product.id %}"><button>Add To Cart</button></a><br>
+                <a href="{% url 'product_detail' product.id %}"><button>View product Detail</button></a><br>
             </div>
             {% endfor %}
         </div>
