@@ -1,0 +1,113 @@
+
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            color: #007bff;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .order-container {
+            width: 85%;
+            margin: 0 auto;
+        }
+
+        .no-orders {
+            text-align: center;
+            font-size: 18px;
+            color: #e74c3c;
+        }
+
+        .status {
+            text-transform: capitalize;
+        }
+
+        .status.Pending {
+            color: orange;
+        }
+
+        .status.Completed {
+            color: green;
+        }
+
+        .status.Failed {
+            color: red;
+        }
+
+        /* Navbar Styles */
+        nav {
+            background: linear-gradient(45deg, #007bff, #00d2ff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        nav a {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            margin: 0 15px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #00d2ff;
+            transform: scale(1.05);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            table, th, td {
+                font-size: 14px;
+            }
+
+            nav {
+                flex-direction: column;
+                padding: 15px 0;
+            }
+
+            nav a {
+                margin: 5px 0;
+            }
+
+            .order-container {
+                width: 95%;
+            }
+        }

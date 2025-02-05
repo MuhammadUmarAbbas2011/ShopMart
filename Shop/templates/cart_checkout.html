@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Your Cart</title>
+    {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'images/brand-logo.png' %}">
+    <link rel="stylesheet" href="{% static 'css/cart_checkout.css' %}">
+
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="{% url 'register' %}">Register</a>
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'logout' %}">Logout</a>
+        <a href="{% url 'products' %}">Products</a>
+        <a href="{% url 'view_cart' %}">Cart</a>
+        <a href="{% url 'track_order' %}">Track Order</a>
+        <a href="{% url 'all_orders' %}">All Orders</a>
+    </nav>
+
+    <!-- Checkout Page Container -->
+    <div class="container">
+        <h1>Your Cart</h1>
+
+        {% if cart_items %}
+            <h3>Items in Your Cart</h3>
+            <ul style="list-style-type: none; padding: 0;">
+                {% for item in cart_items %}
+                    <li>
+                        <img src="{{ item.by_product.image.url }}" alt="{{ item.by_product.name }}" class="product-image">
+                        <p>{{ item.by_product.name }} - ${{ item.by_product.price|floatformat:2 }} x {{ item.quantity }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <p class="price">Total: ${{ total_amount|floatformat:2 }}</p>
+
+            <h3>Billing Information</h3>
+            <form class="checkout-form" method="post" id="payment-form">
+                {% csrf_token %}
+                <input type="number" name="phone_number" placeholder="Enter Your Number" required>
+                <input type="text" name="shipping_address" placeholder="Shipping Address" required>
+                <button type="button" id="checkout-button">Proceed to Payment</button>
+            </form>
+        {% else %}
+            <p>Your cart is empty.</p>
+        {% endif %}
+        
+        <script src="https://js.stripe.com/v3/"></script>
+        <script src="{% static 'js/cart_checkout.js' %}"></script>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Your Shop - All Rights Reserved</p>
+    </footer>
+
+</body>
+</html>

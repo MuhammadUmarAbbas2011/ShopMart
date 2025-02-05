@@ -1,66 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Track Your Order</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f8f8;
-            text-align: center;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            width: 50%;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        h1 {
-            color: #333;
-        }
-
-        input {
-            width: 80%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 1.1em;
-        }
-
-        button {
-            background: #4CAF50;
-            color: white;
-            padding: 10px;
-            font-size: 1.2em;
-            border-radius: 5px;
-            border: none;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #388E3C;
-        }
-
-        .order-details {
-            margin-top: 20px;
-            text-align: left;
-        }
-
-        .error {
-            color: red;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="icon" type="image/png" href="{% static 'images/brand-logo.png' %}">
+    <link rel="stylesheet" href="{% static 'css/order_tracker.css' %}">
 </head>
 <body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li><a href="{% url 'register' %}">Register</a></li>
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+            <li><a href="{% url 'products' %}">Products</a></li>
+            <li><a href="{% url 'view_cart' %}">Cart</a></li>
+            <li><a href="{% url 'track_order' %}">Track Order</a></li>
+        </ul>
+    </nav>
 
     <div class="container">
         <h1>Track Your Order</h1>

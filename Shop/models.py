@@ -60,7 +60,8 @@ class Stores(models.Model):
 
     by_user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
-    
+    image = models.ImageField(upload_to='Store_Images/')
+    unique_name = models.CharField(max_length=100)
     def __str__(self):
         return f"{self.by_user.username} - {self.get_category_display()}"
 
@@ -96,13 +97,13 @@ class CheckoutModel(models.Model):
     phone_number = models.CharField(max_length=15)
     shipping_address = models.TextField()
     payment_status = models.CharField(max_length=20, default="Pending")
-    slug = models.SlugField(unique=True, blank=True)  # Remove default value
-    tracking_id = models.CharField(max_length=15, unique=True, blank=True)  # Unique tracking ID
+    slug = models.SlugField(unique=True, blank=True)  
+    tracking_id = models.CharField(max_length=15, unique=True, blank=True)  
 
     def save(self, *args, **kwargs):
-        if not self.slug:  # Only generate if slug is empty
-            self.slug = slugify(str(uuid.uuid4())[:8])  # Generate a unique slug
-        if not self.tracking_id:  # Generate tracking ID if empty
+        if not self.slug:  
+            self.slug = slugify(str(uuid.uuid4())[:8]) 
+        if not self.tracking_id:  
             self.tracking_id = str(uuid.uuid4())[:15]
         super().save(*args, **kwargs)
 

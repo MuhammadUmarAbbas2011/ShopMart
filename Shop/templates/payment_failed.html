@@ -1,2 +1,32 @@
-<h2>Payment Failed!</h2>
-<p>Something went wrong. Please try again.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Navigation</title>
+    <link rel="icon" type="image/png" href="{% static 'images/brand-logo.png' %}">
+    <link rel="stylesheet" href="{% static 'css/payement_failed.css' %}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li><a href="{% url 'register' %}">Register</a></li>
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+            <li><a href="{% url 'products' %}">Products</a></li>
+            <li><a href="{% url 'view_cart' %}">Cart</a></li>
+            <li><a href="{% url 'track_order' %}">Track Order</a></li>
+            <li><a href="{% url 'all_orders' %}">Orders</a></li>
+            <li><a href="{% url 'create_store' %}">Create Store</a></li>
+        </ul>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="content">
+        <h2>Payment Failed!</h2>
+        <p>Something went wrong. Please try again.</p>
+    </div>
+</body>
+</html>

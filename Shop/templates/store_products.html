@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Products</title>
+    {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'images/brand-logo.png' %}">
+    <link rel="stylesheet" href="{% static 'css/store_products.css' %}">
+    
+
+</head>
+<body>
+    <!-- Navigation bar -->
+    <nav>
+        <a href="{% url 'register' %}">Register</a>
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'logout' %}">Logout</a>
+        <a href="{% url 'products' %}">Products</a>
+        <a href="{% url 'view_cart' %}">View Cart</a>
+        <a href="{% url 'track_order' %}">Track Order</a>
+        <a href="{% url 'all_orders' %}">All Orders</a>
+    </nav>
+
+    <!-- Main content -->
+    <div class="container">
+        <h1>Products for Store: {{ store.unique_name }}</h1>
+        <p><strong>Total Revenue: ${{ total_revenue }}</strong></p>
+
+        {% if products %}
+            <div class="product-list">
+                {% for product in products %}
+                    <div class="product-item">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        <h3>{{ product.name }}</h3>
+                        <p>{{ product.description }}</p>
+                        <p class="price">${{ product.price }}</p>
+                        <p class="sales">Sales: {{ product.sales }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-products">No products available for this store.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

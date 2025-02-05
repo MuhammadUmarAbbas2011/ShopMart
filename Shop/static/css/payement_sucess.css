@@ -1,0 +1,63 @@
+/* Base Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f7f6;
+}
+
+/* Navigation Bar Styles */
+.navbar {
+    background: linear-gradient(to right, #ff7e5f, #feb47b); /* Gradient Background */
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar ul li {
+    margin: 0 20px;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    padding: 8px 16px;
+    display: block;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover Effects */
+.navbar ul li a:hover {
+    background: linear-gradient(to right, #ff7e5f, #feb47b);
+    color: #fff;
+    transform: scale(1.1);
+}
+
+/* Payment Section Styles */
+.payment-success {
+    text-align: center;
+    padding: 40px;
+    background: #fff;
+    margin: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.payment-success h2 {
+    font-size: 24px;
+    color: #28a745;
+}
+
+.payment-success p {
+    font-size: 16px;
+    color: #555;
+}

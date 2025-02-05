@@ -4,85 +4,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Cart</title>
+    {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'images/brand-logo.png' %}">
+    <link rel="stylesheet" href="{% static 'css/cart.css' %}">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #4CAF50;
+        /* Style for Checkout Button */
+        .checkout-btn {
+            background-color: #ff69b4; /* Cute pink background */
+            border: none;
             color: white;
+            padding: 18px 36px;
             text-align: center;
-            padding: 1em 0;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 25px; /* Extra rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow effect */
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s; /* Smooth transitions */
+            width: 80%;
+            max-width: 350px; /* Max width for large screens */
+            margin: 30px auto; /* Center the button with space above and below */
+            display: block; /* Ensures the link is block-level */
         }
 
-        h1 {
-            margin: 0;
-            font-size: 2em;
-        }
-
-        table {
-            width: 90%;
-            margin: 20px auto;
-            border-collapse: collapse;
-            background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-
-        td img {
-            width: 100px;
-            height: auto;
-        }
-
-        td a {
-            color: #4CAF50;
+        .checkout-btn a {
+            color: white;
             text-decoration: none;
             font-weight: bold;
+            display: block;
         }
 
-        td a:hover {
-            text-decoration: underline;
+        /* Hover effect */
+        .checkout-btn:hover {
+            background-color: #ff3385; /* Slightly darker pink on hover */
+            transform: translateY(-4px); /* Button slightly lifts up */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow effect */
         }
 
-        .total {
-            font-size: 1.5em;
-            font-weight: bold;
-            text-align: right;
-            padding-right: 10%;
+        /* Active effect */
+        .checkout-btn:active {
+            background-color: #ff2854; /* Even darker pink on click */
+            transform: translateY(-2px); /* Slightly lower lift on click */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Reset shadow on click */
         }
 
-        .empty-cart {
-            text-align: center;
-            font-size: 1.2em;
-            margin-top: 20px;
+        /* Focus effect */
+        .checkout-btn:focus {
+            outline: none;
+            box-shadow: 0 0 8px rgba(255, 105, 180, 0.8); /* Focus outline in pink */
         }
 
-        footer {
-            text-align: center;
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 0;
-            position: fixed;
-            width: 100%;
-            bottom: 0;
+        /* For smaller screens */
+        @media (max-width: 768px) {
+            .checkout-btn {
+                width: 90%; /* Makes the button take more width on smaller screens */
+            }
         }
     </style>
 </head>
 <body>
+
+<!-- Navigation Bar -->
+<nav>
+    <a href="{% url 'register' %}">Register</a>
+    <a href="{% url 'login' %}">Login</a>
+    <a href="{% url 'products' %}">Products</a>
+    <a href="{% url 'view_cart' %}">View Cart</a>
+    <a href="{% url 'checkout' 0 %}">Checkout</a>
+    <a href="{% url 'track_order' %}">Track Order</a>
+</nav>
 
 <header>
     <h1>Your Cart</h1>
@@ -115,12 +106,12 @@
                         <td>${{ item.by_product.price|floatformat:2 }}</td>
                         <td>{{ item.quantity }}</td>
                         <td>${{ item.total_price|floatformat:2 }}</td>
-
                         <td>{{ item.by_product.category }}</td>
                         <td>{{ item.by_product.created_at|date:"Y-m-d H:i" }}</td>
                         <td>
-                            <!-- Link to remove or update quantity -->
-                            <a href="{% url 'delete_from_cart' item.by_product.id %}">Remove</a> | <a href="{% url 'add_to_cart' item.by_product.id %}">Update</a>
+                            <a href="{% url 'delete_from_cart' item.by_product.id %}">Remove</a> | 
+                            <a href="{% url 'add_to_cart' item.by_product.id %}">Add To Cart Again</a> |
+                            <a href="{% url 'checkout' item.by_product.id %}">Checkout</a>
                         </td>
                     </tr>
                 {% endfor %}
@@ -130,6 +121,11 @@
         <div class="total">
             Total: ${{ total_amount|floatformat:2 }}
         </div>
+        
+        <!-- Checkout Button -->
+        <div class="button">
+            <a class="checkout-btn" href="{% url 'cart_checkout' %}">Checkout Cart</a>
+        </div>
 
     {% else %}
         <div class="empty-cart">
@@ -138,9 +134,7 @@
     {% endif %}
 </div>
 
-<footer>
-    <p>&copy; 2025 Your Shop - All Rights Reserved</p>
-</footer>
+
 
 </body>
 </html>

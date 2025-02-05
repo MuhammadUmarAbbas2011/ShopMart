@@ -1,0 +1,171 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+
+:root {
+    --primary-color: hsl(210, 80%, 60%);
+    --secondary-color: hsl(210, 70%, 50%);
+    --heading-color: hsl(210, 20%, 20%);
+    --text-color: hsl(210, 10%, 40%);
+    --background-color: hsl(210, 90%, 95%);
+    --font-family: "Poppins", sans-serif;
+    --heading-font-size: 1.5rem;
+    --small-font-size: 0.875rem;
+    --smaller-font-size: 0.75rem;
+    --medium-weight: 500;
+    --semi-bold-weight: 600;
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background-color: var(--background-color);
+    font-family: var(--font-family);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden; /* Prevent scrolling */
+    position: relative;
+}
+
+.login-container {
+    position: relative;
+    width: 90%;
+    max-width: 400px; /* Limit the width of the form */
+    background-color: hsla(210, 20%, 90%, 0.9);
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    z-index: 1; /* Ensure the form is above the background */
+}
+
+.login-heading {
+    color: var(--heading-color);
+    font-size: var(--heading-font-size);
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.login-heading span {
+    color: var(--primary-color);
+}
+
+.login-description {
+    font-size: var(--small-font-size);
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.login-label {
+    display: block;
+    color: var(--heading-color);
+    font-size: var(--small-font-size);
+    font-weight: var(--semi-bold-weight);
+    margin-bottom: 0.25rem;
+}
+
+.login-input {
+    width: 100%;
+    padding: 14px 12px;
+    border-radius: 6px;
+    border: 2px solid var(--text-color);
+    background-color: hsla(210, 20%, 90%, 0.7);
+    color: var(--heading-color);
+    font-size: var(--smaller-font-size);
+    font-weight: var(--medium-weight);
+    transition: border 0.4s;
+    margin-bottom: 1rem; /* Add space between inputs */
+}
+
+.login-input::placeholder {
+    color: var(--text-color);
+}
+
+.login-input:focus,
+.login-input:valid {
+    border: 2px solid var(--primary-color);
+}
+
+.login-field {
+    position: relative; /* Positioning for the eye icon */
+}
+
+.login-eye {
+    position: absolute;
+    right: 12px; /* Adjusted for better positioning */
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: var(--text-color); /* Color for the eye icon */
+}
+
+.login-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.login-button {
+    width: 100%; /* Full width for the button */
+    padding: 14px 0;
+    border-radius: 6px;
+    background: linear-gradient(180deg, var(--primary-color), var(--secondary-color));
+    color: #fff;
+    font-size: var(--small-font-size);
+    font-weight: var(--semi-bold-weight);
+    box-shadow: 0 6px 24px hsla(210, 80%, 50%, 0.5);
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.login-button:hover {
+    background: linear-gradient(180deg, var(--secondary-color), var(--primary-color));
+}
+
+.login-button-ghost {
+    background: hsla(210, 20%, 90%, 0.7);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.login-forgot {
+    font-size: var(--smaller-font-size);
+    font-weight: var(--semi-bold-weight);
+    color: var(--primary-color);
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("{% static 'images/bg-login.jpg' %}"); /* Use your image here */
+    background-size: cover;
+    background-position: center;
+    z-index: 0; /* Ensure the image is behind the form */
+}
+
+.message {
+    color: red; /* Change this to your desired color */
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+@media screen and (max-width: 360px) {
+    .login-actions {
+        flex-direction: column;
+    }
+}

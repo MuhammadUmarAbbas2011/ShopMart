@@ -1,3 +1,35 @@
-<h2>Payment Successful!</h2>
-<p>Thank you for your purchase, {{ order.by_user.username }}.</p>
-<p>Order Tracking ID: {{ tracking_id }}</p>
+<!DOCTYPE html>
+<html lang="en">
+    {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Bar with Gradient Hover</title>
+    <link rel="icon" type="image/png" href="{% static 'images/brand-logo.png' %}">
+    <link rel="stylesheet" href="{% static 'css/payment_success.css' %}">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="{% url 'register' %}">Register</a></li>
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+            <li><a href="{% url 'products' %}">Products</a></li>
+            <li><a href="{% url 'view_cart' %}">Cart</a></li>
+            <li><a href="{% url 'track_order' %}">Track Order</a></li>
+            <li><a href="{% url 'all_orders' %}">Orders</a></li>
+            <li><a href="{% url 'create_store' %}">Create Store</a></li>
+        </ul>
+    </nav>
+
+    <!-- Payment Success Section -->
+    <section class="payment-success">
+        <h2>Payment Successful!</h2>
+        <p>Thank you for your purchase, {{ order.by_user.username }}.</p>
+        <p>Order Tracking ID: {{ tracking_id }}</p>
+    </section>
+
+</body>
+</html>

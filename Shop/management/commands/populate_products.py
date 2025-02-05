@@ -7,19 +7,17 @@ from Shop.models import Stores, Products
 fake = Faker()
 
 class Command(BaseCommand):
-    help = "Generate 200 dummy products"
+    
 
     def handle(self, *args, **kwargs):
-        # Ensure at least one user exists
         user = User.objects.first()
         if not user:
             self.stdout.write(self.style.ERROR("No users found! Create a user first."))
             return
 
-        # Get or create stores for the user
         stores = list(Stores.objects.filter(by_user=user))
         if not stores:
-            for _ in range(5):  # Create 5 stores
+            for _ in range(5): 
                 store = Stores.objects.create(
                     by_user=user,
                     category=random.choice([c[0] for c in Stores.CATEGORY_CHOICES])
@@ -34,7 +32,7 @@ class Command(BaseCommand):
 
         ]
         
-        for _ in range(200):  # Generate 2000 products
+        for _ in range(200):  
             store = random.choice(stores)
             category = random.choice(Stores.CATEGORY_CHOICES)[0]
 
@@ -43,11 +41,10 @@ class Command(BaseCommand):
                 name=fake.word().capitalize(),
                 description=fake.sentence(),
                 price=round(random.uniform(5.0, 500.0), 2),
-                image=random.choice(images),  # Randomly choose an image path
+                image=random.choice(images),
                 category=category
             )
             products.append(product)
 
-        # Bulk create products
         Products.objects.bulk_create(products)
         self.stdout.write(self.style.SUCCESS("Successfully added 200 dummy products!"))

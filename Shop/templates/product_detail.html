@@ -3,93 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ product.name }} - Product Details</title>
+    {% load static %}
+    <title>{{ product.name }} - Details</title>
+    <link rel="icon" type="image/png" href="{% static 'images/brand-logo.png' %}">
+    <link rel="stylesheet" href="{% static 'css/order_tracker.css' %}">
     <style>
+        /* Body and general styles */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f8f8f8;
+            background: linear-gradient(45deg, #ff6ec7, #ff7a5a);
             margin: 0;
             padding: 0;
-        }
-
-        .container {
-            width: 80%;
-            margin: 40px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .product-image {
-            width: 100%;
-            max-height: 400px;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-
-        h1 {
-            font-size: 2em;
             color: #333;
         }
 
-        .price {
-            font-size: 1.5em;
-            color: #e91e63;
-            font-weight: bold;
-            margin: 10px 0;
+        h2, h3 {
+            color: #333;
         }
 
-        .description {
-            font-size: 1.2em;
-            color: #555;
-            margin-bottom: 20px;
+        /* Container for content */
+        .container {
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+            text-align: left;
         }
 
-        .category {
-            font-size: 1em;
-            color: #777;
+        /* Navigation Bar */
+        nav {
+            background-color: #333;
+            padding: 10px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 10px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: #ff6ec7;
+            transform: scale(1.1);
+        }
+
+        /* Product Review Section */
+        .review {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
             margin-bottom: 10px;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 1.2em;
-            color: white;
-            background: #4CAF50;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: 0.3s;
+        .review p {
+            margin: 5px 0;
         }
 
-        .btn:hover {
-            background: #388E3C;
+        .rating {
+            color: #f4b400;
+            font-weight: bold;
         }
 
+        .no-reviews {
+            font-style: italic;
+            color: #777;
+        }
+
+        /* Hover Effects for Images */
+        .product-image:hover {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+
+        /* Footer Styles */
         footer {
             text-align: center;
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 0;
             margin-top: 20px;
+            font-size: 14px;
+            color: #777;
         }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            nav a {
+                margin: 5px;
+            }
+        }
+
     </style>
 </head>
 <body>
 
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="{% url 'register' %}">Register</a>
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'logout' %}">Logout</a>
+        <a href="{% url 'products' %}">Products</a>
+        <a href="{% url 'view_cart' %}">View Cart</a>
+        <a href="{% url 'track_order' %}">Track Order</a>
+        <a href="{% url 'all_orders' %}">All Orders</a>
+    </nav>
+
     <div class="container">
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
-        <h1>{{ product.name }}</h1>
-        <p class="category"><strong>Category:</strong> {{ product.category }}</p>
-        <p class="price">$ {{ product.price|floatformat:2 }}</p>
-        <p class="description">{{ product.description }}</p>
+        <h2>{{ product.name }}</h2>
+        <p><strong>Price:</strong> ${{ product.price }}</p>
+        <p><strong>Description:</strong> {{ product.description }}</p>
         
-        <a href="{% url 'add_to_cart' product.id %}" class="btn">Add to Cart</a>
+        <h3>Image:</h3>
+        <img src="{{ product.image.url }}" alt="Product Image" class="product-image" style="width: 150px;">
+        
+        <p>{{ store.by_user }}</p>
+        {% if store.image %}
+            <img src="{{ store.image.url }}" alt="" style="width: 100px;">
+            
+        {% else %}
+        <img src="{% static 'images/bg-login.jpg' %}" alt="" style="width: 100px;">
+        {% endif %}
+
+        <h3>Customer Reviews</h3>
+        {% if reviews %}
+            {% for review in reviews %}
+                <div class="review">
+                    <p><strong>{{ review.user.username }}</strong> ({{ review.created_at|date:"M d, Y" }})</p>
+                    <p class="rating">Rating: ⭐{{ review.rating }}/5</p>
+                    <p>{{ review.comment }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-reviews">No reviews yet. Be the first to review this product!</p>
+        {% endif %}
+
+        <br>
+        <a href="{% url 'all_orders' %}">Back to Orders</a>
     </div>
 
     <footer>
-        <p>&copy; 2025 Your Shop - All Rights Reserved</p>
+        <p>&copy; 2025 Your E-Commerce Platform. All Rights Reserved.</p>
     </footer>
 
 </body>

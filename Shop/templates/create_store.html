@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Store</title>
+    {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'images/brand-logo.png' %}">
+    <link rel="stylesheet" href="{% static 'css/create_store.css' %}">
+
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav>
+    <ul>
+        <li><a href="{% url 'register' %}">Register</a></li>
+        <li><a href="{% url 'login' %}">Login</a></li>
+        <li><a href="{% url 'logout' %}">Logout</a></li>
+        <li><a href="{% url 'products' %}">Products</a></li>
+        <li><a href="{% url 'create_store' %}">Create Store</a></li>
+        <li><a href="{% url 'track_order' %}">Track Order</a></li>
+    </ul>
+</nav>
+
+<!-- Main Container -->
+<div class="container">
+    <h2>Create Your Store</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="messages">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="unique_name">Store Name:</label>
+        <input type="text" name="unique_name" placeholder="Enter your store name" required>
+
+        <label for="category">Category:</label>
+        <select name="category" required>
+            <option value="" disabled selected>Select Category</option>
+            <option value="TECH">Tech</option>
+            <option value="CLOTHING">Clothing</option>
+            <option value="FOOD">Food</option>
+            <option value="FURNITURE">Furniture</option>
+            <option value="BEAUTY">Beauty</option>
+            <option value="SPORTS">Sports</option>
+            <option value="AUTOMOTIVE">Automotive</option>
+            <option value="TOYS">Toys</option>
+            <option value="BOOKS">Books</option>
+            <option value="MUSIC">Music</option>
+            <option value="HEALTH">Health</option>
+            <option value="HOME_APPLIANCES">Home Appliances</option>
+            <option value="GROCERY">Grocery</option>
+            <option value="JEWELRY">Jewelry</option>
+            <option value="PET_SUPPLIES">Pet Supplies</option>
+            <option value="ELECTRONICS">Electronics</option>
+            <option value="BABY_PRODUCTS">Baby Products</option>
+            <option value="GARDENING">Gardening</option>
+            <option value="OFFICE_SUPPLIES">Office Supplies</option>
+            <option value="TRAVEL">Travel</option>
+            <option value="OUTDOOR">Outdoor & Camping</option>
+            <option value="VIDEO_GAMES">Video Games</option>
+            <option value="HANDMADE">Handmade & Crafts</option>
+            <option value="LUXURY">Luxury Items</option>
+            <option value="MEDICAL">Medical & Pharmacy</option>
+            <option value="INDUSTRIAL">Industrial & Tools</option>
+            <option value="GIFTS">Gifts & Collectibles</option>
+            <option value="MOVIES">Movies & Entertainment</option>
+            <option value="HOME_DECOR">Home Decor</option>
+            <option value="ART">Art & Paintings</option>
+            <option value="HOBBIES">Hobbies & DIY</option>
+            <option value="SECURITY">Security & Surveillance</option>
+            <option value="BICYCLES">Bicycles & Accessories</option>
+            <option value="WATCHES">Watches</option>
+            <option value="FARMING">Farming & Agriculture</option>
+            <option value="REAL_ESTATE">Real Estate</option>
+            <option value="EDUCATION">Education & e-Learning</option>
+            <option value="GAMING">Gaming</option>
+            <option value="FASHION">Fashion</option>
+            <option value="SPIRITUAL">Spiritual & Religious</option>
+            <option value="MOTORS">Motorcycles & Scooters</option>
+            <option value="RESTAURANTS">Restaurants & Cafes</option>
+            <option value="BAKERY">Bakery & Confectionery</option>
+            <option value="WEDDINGS">Weddings & Events</option>
+            <option value="PHOTOGRAPHY">Photography & Videography</option>
+            <option value="MUSICAL_INSTRUMENTS">Musical Instruments</option>
+            <option value="TEA_COFFEE">Tea & Coffee</option>
+            <option value="FISHING">Fishing & Hunting</option>
+            <option value="DRONES">Drones & RC Gadgets</option>
+            <option value="ENERGY">Solar & Renewable Energy</option>
+            <option value="VR_AR">VR & AR Equipment</option>
+            <option value="FITNESS">Fitness & Gym Equipment</option>
+        </select>
+
+        <label for="image">Store Image:</label>
+        <input type="file" name="image" required>
+
+        <button type="submit" class="btn">Create Store</button>
+    </form>
+</div>
+
+</body>
+</html>

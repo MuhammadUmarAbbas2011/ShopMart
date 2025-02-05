@@ -4,35 +4,64 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product List</title>
+    <title>Add Product</title>
+    <link rel="stylesheet" href="{% static 'css/add_product.css' %}">
     <link rel="icon" type="image/png" href="{% static 'images/brand-logo.png' %}">
-    <link rel="stylesheet" href="{% static 'css/product_list.css' %}">
-    <style>
-        body{
-            background-image: url("{% static 'images/bg-prod.jpg' %}"); 
-        }
-    </style>
 
 </head>
 <body>
-    <!-- Navbar -->
+    <!-- Navigation Bar -->
     <nav>
-        <a href="{% url 'register' %}">Register</a>
-        <a href="{% url 'login' %}">Login</a>
-        <a href="{% url 'logout' %}">Logout</a>
-        <a href="{% url 'products' %}">Products</a>
-        <a href="{% url 'view_cart' %}">Cart</a>
-        <a href="{% url 'track_order' %}">Track Order</a>
-        <a href="{% url 'all_orders' %}">All Orders</a>
+        <ul>
+            <li><a href="{% url 'register' %}">Register</a></li>
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+            <li><a href="{% url 'products' %}">Products</a></li>
+            <li><a href="{% url 'view_cart' %}">View Cart</a></li>
+            <li><a href="{% url 'track_order' %}">Track Order</a></li>
+            <li><a href="{% url 'all_orders' %}">All Orders</a></li>
+        </ul>
     </nav>
 
+    <!-- Product Form -->
     <div class="container">
-        <!-- Filter Form -->
-        <form class="filter-form" method="get" action="{% url 'products' %}">
-            <input type="text" name="q" placeholder="Search products..." value="{{ query }}">
+        <h1>Add New Product</h1>
 
-                <select name="category">
-                    <option value="" disabled selected>Select Category</option>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Store Selection -->
+            <div class="form-group">
+                <label for="store">Select Store:</label>
+                <select name="store" id="store" class="form-control" required>
+                    {% for store in stores %}
+                        <option value="{{ store.id }}">{{ store.unique_name }} - {{ store.get_category_display }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Product Name -->
+            <div class="form-group">
+                <label for="name">Product Name:</label>
+                <input type="text" id="name" name="name" class="form-control" required>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" class="form-control" rows="4" required></textarea>
+            </div>
+
+            <!-- Price -->
+            <div class="form-group">
+                <label for="price">Price:</label>
+                <input type="number" id="price" name="price" class="form-control" step="0.01" required>
+            </div>
+
+            <!-- Category Selection -->
+            <div class="form-group">
+                <label for="category">Select Category:</label>
+                <select name="category" id="category" class="form-control" required>
                     <option value="TECH">Tech</option>
                     <option value="CLOTHING">Clothing</option>
                     <option value="FOOD">Food</option>
@@ -86,34 +115,19 @@
                     <option value="VR_AR">VR & AR Equipment</option>
                     <option value="FITNESS">Fitness & Gym Equipment</option>
                 </select>
-
-            <button type="submit">Filter</button>
-        </form>
-        
-        <!-- Product Grid -->
-        <div class="product-container" id="product-container">
-            {% for product in products %}
-            <div class="product-card">
-                <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                <h3>{{ product.name }}</h3>
-                <p>{{ product.description }}</p>
-                <p>Price: ${{ product.price }}</p>
-                <p>Store: {{ product.store.by_user.username }}</p>
-                <p>Category: {{ product.get_category_display }}</p>
-                <a href="{% url 'add_to_cart' product.id %}">Add To Cart</a><br>
-                <a href="{% url 'checkout' product.id %}">Checkout</a><br>
-                <a href="{% url 'product_detail' product.id %}">View Product Detail</a>
             </div>
-            {% endfor %}
-        </div>
 
-        <!-- Loading Indicator -->
-        <div class="loading" id="loading">
-            Loading more products...
-        </div>
+            <!-- Image -->
+            <div class="form-group">
+                <label for="image">Product Image:</label>
+                <input type="file" id="image" name="image" class="form-control" accept="image/*" required>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group">
+                <button type="submit" class="btn">Add Product</button>
+            </div>
+        </form>
     </div>
-
-    <script src="{% static 'js/product_list.js' %}">
-    </script>
 </body>
 </html>
