@@ -1,7 +1,7 @@
 # Intall Python By Viewing This Link https://www.python.org/downloads/
 
 # Then Install Django By
-Django==4.2 
+Django==4.2.20 
 
 # Then Install Stripe And Add PUBLISHABLE_API_KEY Into Checkout_Cart.js
 stripe==5.5.0
